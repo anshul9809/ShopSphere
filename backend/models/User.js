@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const UserSchema = mongoose.Schema({
     firstName: {
@@ -13,17 +15,17 @@ const UserSchema = mongoose.Schema({
     },
     email:{
         type:String,
-        required:true,
+        require:true,
         unique:true,
     },
     mobile:{
         type:String,
-        required:true,
+        require:true,
         unique:true,
     },
     password:{
         type:String,
-        required:true,
+        require:true,
     },
     role:{
         type: String,
@@ -72,8 +74,11 @@ UserSchema.pre("save", async function (next) {
     }
 });
 
-UserSchema.methods.isPasswordMatched = async (enterPassword)=>{
-    return await bcrypt.compare(enterPassword, this.passsword)
+UserSchema.methods.isPasswordMatched = async function (enteredPassword){
+    if (!this.password) {
+        throw new Error("Password is not defined");
+    }
+    return await bcrypt.compare(enteredPassword, this.password);
 }
 
 UserSchema.methods.createPasswordResetToken = function(){
@@ -81,7 +86,6 @@ UserSchema.methods.createPasswordResetToken = function(){
     this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
     this.passwordResetExpires = Date.now() + 30*60*1000;
     return resetToken;
-
 }
 
 
