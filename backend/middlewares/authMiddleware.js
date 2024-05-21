@@ -22,3 +22,11 @@ module.exports.authMiddleware = expressAsyncHandler(async (req,res, next)=>{
         throw new Error("There's no token attached");
     }
 });
+
+
+module.exports.isAdmin = expressAsyncHandler(async (req,res, next)=>{
+    if(req.user.role === "admin") return next();  //if the user is admin then allow him to proceed
+    else{
+        throw new Error("You are not an admin");
+    }
+});

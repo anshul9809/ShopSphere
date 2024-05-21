@@ -9,7 +9,10 @@ const {
     forgotPasswordToken,
     resetPassword,
     updatePassword,
-    handleRefreshToken
+    handleRefreshToken,
+    updateUser,
+    getSingleUser,
+    deleteUser
 }  = require("../controllers/userController");
 
 
@@ -20,6 +23,9 @@ router.post("/forgot-password-token", forgotPasswordToken);
 router.put("/reset-password/:token", resetPassword);
 router.put("/update-password", authMiddleware, updatePassword);
 router.get("/refresh", handleRefreshToken);
+router.post("/update-user", authMiddleware, updateUser);
+router.get("/profile", authMiddleware, getSingleUser);
+router.delete("/delete-user", authMiddleware, deleteUser);
 
 
 module.exports = router;

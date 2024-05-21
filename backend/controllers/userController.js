@@ -173,6 +173,47 @@ const handleRefreshToken = expressAsyncHandler(async (req,res)=>{
 });
 
 
+const getSingleUser = expressAsyncHandler(async (req,res)=>{
+    const id = req.user._id;
+    validateMongodbId(id);
+    const user = await User.findById(id).select("-password");
+    if(!user){
+        throw new Error("No user found");
+    }
+    res.status(200).json(user);
+});
+
+const updateUser = expressAsyncHandler(async (req,res)=>{
+    const id = req.user._id;
+    validateMongodbId(id);
+    const user = await User.findByIdAndUpdate(id,{
+        firstName: req?.body?.firstName,
+        lastName: req?.body?.lastName,
+        email: req?.body?.email,
+        mobile: req?.body?.mobile,
+    },{new:true});
+    if(!user){
+        throw new Error("No user found");
+    }
+    else{
+        res.status(200).json(user);
+    }
+});
+
+
+const deleteUser = expressAsyncHandler(async (req,res)=>{
+    const id = req.user._id;
+    validateMongodbId(id);
+    const user = await User.findByIdAndDelete(id);
+    if(!user){
+        throw new Error("No user found");
+    }
+    else{
+        res.status(200).json(user);
+    }
+});
+
+
 
 module.exports = {
     registerUser,
@@ -182,4 +223,7 @@ module.exports = {
     resetPassword,
     updatePassword,
     handleRefreshToken,
+    updateUser,
+    getSingleUser,
+    deleteUser
 }
