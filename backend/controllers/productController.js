@@ -1,7 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
 const {validateMongodbId} = require("../utils/validateMongoDBId");
 const slugify = require("slugify");
-const {cloudinaryUploading} = require("../utils/cloudinary");
+const {cloudinaryUploadImg} = require("../utils/cloudinary");
 const fs = require("fs");
 
 const Product = require("../models/Product");
@@ -157,23 +157,27 @@ const uploadImages = expressAsyncHandler(async (req,res)=>{
     const {id} = req.params;
     validateMongodbId(id);
     try{
-        const uploader = (path)=> cloudinaryUploading(path, "images");
+        const uploader = (path)=> cloudinaryUploadImg(path, "images");
         const urls = [];
         const files = req.files;
-        for(const file of file){
+        for(const file of files){
+            console.log("file is ", file);
             const { path } = file;
+            console.log("path is ", path);
             const newPath = await uploader(path);
             urls.push(newPath);
             fs.unlinkSync(path);
+            
         }
         const findProduct = await Product.findByIdAndUpdate(id, {
-            imags: urls.map((file)=>{
+            images: urls.map((file)=>{
                 return file;
             })
         },
         {new:true});
         res.json(findProduct);
     }catch(err){
+        console.log("uploading images error is ", err);
         res.status(500).json({message: "Unable to upload the images" });
     }
 });
