@@ -1,0 +1,19 @@
+@import "../../theme.scss";
+
+.footer{
+    position: absolute;
+    width: 100%;
+    background-color: $secondaryColor;
+    bottom: -5vh;
+    p{
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+        // min-height: 5vh;
+        width: fit-content;
+        box-sizing: border-box;
+        padding: 10px;
+        box-shadow: inset 5px -5px 10px #000000,
+                    inset -5px 5px 10px #000000;
+    }
+}

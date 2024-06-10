@@ -1,0 +1,117 @@
+@import "../../theme.scss";
+
+.sticky{
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: $backgroundColor;
+}
+.header{
+    width: 100vw;
+    display: flex;
+    padding: 0 3rem;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: inset 5px -5px 10px #080808,
+                inset -5px 5px 10px #1a1a1a;
+
+    .active{
+        right: 0 !important;
+    }
+    
+    &_cart_icon{
+        z-index: 100;
+        position: relative;
+        display: flex;
+        &_number{
+            width: 20px;
+            height: 20px;
+            display: grid;
+            place-items: center;
+            font-size: 1.1em;
+            position: absolute;
+            right: -20%;
+            top: -20%;
+            z-index: 101;
+            background-color: $textPrimaryColor;
+            color: $backgroundColor;
+            border-radius: 50%;
+        }
+    }
+    &_icon{
+        font-size: 1.5em;
+        position: relative;
+        cursor: pointer;
+    }
+
+    &_logo{
+        max-width: 80px;
+        height: auto;
+        
+        &_img{
+            border-radius: $borderRadius;
+        }
+    }
+    &_right{
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        .menu_icon{
+            padding: $padding;
+            transition: all linear 0.3s;
+            display: none;
+            min-width: 60px;
+        }
+        .header_menu{
+            display: flex;
+            width: 100%;
+            padding: 1rem;
+            z-index: 100;
+
+            .header_item{
+                padding: $textPadding;
+                font-family: $bodyFont;
+                font-size: 1.2em;
+                font-weight: 700;
+                border-radius: 14px;
+                &:hover{
+                    background: $hoverBackground;
+                    box-shadow: inset 5px -5px 4px #252525,
+                                inset -5px 5px 4px #454545;
+                }
+            }
+        }
+    } 
+    
+    @media (max-width: 768px) {
+        padding: 0 1rem;
+        &_logo{
+            max-width: 50px;
+        }
+        &_right{
+            .header_menu{
+                border-radius: $borderRadius 0 $borderRadius 0;
+                align-items: center;
+                flex-direction: column;
+                position: fixed;
+                gap: 10px;
+                padding-top: 120px;
+                top: 0;
+                z-index: 98;
+                right: -100%;
+                max-width: 60%;
+                height: 100vh;
+                background-color: rgba(3,3,3,0.8);
+                .header_item{
+                    display: block;
+                }
+            }
+            .menu_icon{
+                display: block;
+                z-index: 100;
+            }
+            
+        }
+    }
+}
+

@@ -1,0 +1,28 @@
+@import "../../theme.scss";
+.headingParent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.6em;
+    margin-bottom: 1em;
+    h2{
+        font-size: 2em;
+    }
+    button{
+        box-shadow: $shadowDiv;
+    }
+
+    @media (max-width: 768px){
+        font-size: 1em;
+        h2{
+            font-size: 1.5em;
+        }
+    }
+}
+.heading{
+    font-size: 3.6em;
+
+    @media(max-width: 768px){
+        font-size: 2em;
+    }
+}
