@@ -31,7 +31,7 @@ const productImgResize = async (req, res, next) => {
     if (!req.files || req.files.length === 0) {
         return next();
     }
-
+    console.log("i'm here as the resize");
     try {
         await Promise.all(
             req.files.map(async (file) => {
