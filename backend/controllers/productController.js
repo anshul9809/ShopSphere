@@ -18,7 +18,6 @@ const createProduct = expressAsyncHandler(async (req,res)=>{
         throw new Error(err?err.message:"Something went wrong");
     }
 });
-
 const getProduct = expressAsyncHandler(async (req,res)=>{
     try{
         const {id} = req.params;
@@ -34,7 +33,6 @@ const getProduct = expressAsyncHandler(async (req,res)=>{
         throw new Error(err?err.message:"Something went wrong");
     }
 });
-
 const allProducts = expressAsyncHandler(async (req,res)=>{
     try {
         // Filtering of products
@@ -81,7 +79,6 @@ const allProducts = expressAsyncHandler(async (req,res)=>{
         throw new Error(err?err.message:"Something went wrong");
     }
 });
-
 const updateProduct = expressAsyncHandler(async (req,res)=>{
     try{
         const {id} = req.params;
@@ -97,7 +94,6 @@ const updateProduct = expressAsyncHandler(async (req,res)=>{
         throw new Error(err?err.message:"Something went wrong");
     }
 });
-
 const deleteProduct = expressAsyncHandler(async (req,res)=>{
     try{
         const {id} = req.params;
@@ -111,44 +107,60 @@ const deleteProduct = expressAsyncHandler(async (req,res)=>{
         throw new Error(err?err.message:"Something went wrong");
     }
 });
-
 const rating = expressAsyncHandler(async (req, res) => {
-    const id = req.user._id;
-    const { star, prodId, comment } = req.body;
-
-    try {
-        const product = await Product.findById(prodId);
-        if (!product) {
-            return res.status(404).json({ message: "Product not found" });
-        }
-
-        let alreadyRated = product.ratings.find((rating) =>
-            rating.postedBy.toString() === id.toString()
+    const {_id} = req.user;
+    const {star, prodId, comment} = req.body;
+    try{
+        const product = await Product.findById(id);
+        let alreadyRated = product.ratings.find(
+            (userId) => userId.postedby.toString() === _id.toString()
         );
-
-        if (alreadyRated) {
-            alreadyRated.star = star;
-            alreadyRated.comment = comment;
-        } else {
-            product.ratings.push({
-                star,
-                comment,
-                postedBy: id,
-            });
+        if(alreadyRated){
+            const updateRating = await Product.updateOne(
+                {
+                    ratings: { $elemMatch: alreadyRated }
+                },
+                {
+                  $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+                },
+                {
+                  new: true,
+                }
+            );
         }
-
-        const updatedProduct = await product.save();
-
-        const totalRating = product.ratings.length;
-        const sumRating = product.ratings.reduce((acc, rating) => acc + rating.star, 0);
-        const actualRating = Math.round(sumRating / totalRating);
-
-        updatedProduct.overallRating = actualRating;
-        const finalProduct = await updatedProduct.save();
-
-        res.json(finalProduct);
-    } catch (err) {
-        res.status(500).json({ message: "Unable to update the product rating" });
+        else{
+            const rateProduct = await Product.findByIdAndUpdate(
+                prodId,
+                {
+                  $push: {
+                    ratings: {
+                      star: star,
+                      comment: comment,
+                      postedby: _id,
+                    },
+                  },
+                },
+                {
+                  new: true,
+                }
+            );
+        }
+        const getAllRatings = await Product.findById(prodId);
+        let totalRating = getallratings.ratings.length;
+        let ratingsum = getallratings.ratings
+        .map((item) => item.star)
+        .reduce((prev, curr) => prev + curr, 0);
+        let actualRating = Math.round(ratingsum / totalRating);
+        let finalproduct = await Product.findByIdAndUpdate(
+        prodId,
+        {
+            totalrating: actualRating,
+        },
+        { new: true }
+        );
+        res.json(finalproduct);
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
     }
 });
 
