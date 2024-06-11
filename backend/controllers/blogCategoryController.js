@@ -45,7 +45,6 @@ const getCategory = expressAsyncHandler(async (req,res)=>{
         throw new Error(err?err.message:"Something went wrong")
     }
 });
-
 const getAllCategory = expressAsyncHandler(async (req,res)=>{
     try{
         const categories = await BlogCategory.find({});
