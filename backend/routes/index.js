@@ -8,4 +8,5 @@ router.use("/blog", require("./blogRoutes"));
 router.use("/blogCategory", require("./blogCategoryRoutes"));
 router.use("/coupon", require("./couponRoutes"));
 router.use("/enquiry", require("./enquiryRoutes"));
+router.use("/brand", require("./brandRoutes"));
 module.exports = router;
