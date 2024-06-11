@@ -6,5 +6,5 @@ router.use("/admin", require("./adminRoutes"));
 router.use("/product", require("./productRoutes"));
 router.use("/blog", require("./blogRoutes"));
 router.use("/blogCategory", require("./blogCategoryRoutes"));
-
+router.use("/coupon", require("./couponRoutes"));
 module.exports = router;
