@@ -20,7 +20,14 @@ const {
     getWishlist,
     addToCart,
     getUserCart,
-    emptyCart
+    emptyCart,
+    createOrder,
+    getAllOrders,
+    getUserOrders,
+    getOrderByUserId,
+    updateOrderStatus,
+    applyCoupon,
+    saveAddress
 }  = require("../controllers/userController");
 
 router.post("/admin-login", adminLogin);
@@ -36,11 +43,18 @@ router.put("/update-password", authMiddleware, updatePassword);
 router.get("/refresh", handleRefreshToken);
 router.post("/update-user", authMiddleware, updateUser);
 router.get("/profile", authMiddleware, getSingleUser);
+router.post("/save-address", authMiddleware, saveAddress);
 router.delete("/delete-user", authMiddleware, deleteUser);
 router.get("/wishlist", authMiddleware, getWishlist);
+router.post("/cart/cash-order", authMiddleware, createOrder);
+router.get("/get-orders", authMiddleware, getUserOrders);
+router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
+router.post("/getorderbyuser/:id", authMiddleware, isAdmin, getOrderByUserId);
+router.post("/update-order-status", authMiddleware, isAdmin, updateOrderStatus);
 router.post("/cart", authMiddleware, addToCart);
 router.get("/cart", authMiddleware, getUserCart);
 router.get("/empty-cart", authMiddleware, emptyCart);
+router.post("/cart/apply-coupon", authMiddleware, applyCoupon);
 
 
 module.exports = router;

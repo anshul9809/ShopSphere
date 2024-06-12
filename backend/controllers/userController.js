@@ -347,18 +347,153 @@ const emptyCart = expressAsyncHandler(async (req,res)=>{
         throw new Error(err?err.message:"Somethign went wrong");
     }
 });
-// const applyCoupon = expressAsyncHandler(async (req,res)=>{
-//     const {coupon} = req.body;
-//     const {_id} = req.user;
-//     validateMongodbId(_id);
-//     validateMongodbId(id);
-//     const validCoupon = await Coupon.findOne({name:coupon});
-//     if(!validCoupon){
-//         throw new Error("Invalid Coupon");
-//     }
-//     const user = await User.findOne({_id});
-//     let {cartTotal} = await User.findOne();
-// });
+
+const createOrder = expressAsyncHandler(async (req,res)=>{
+    const {COD, couponApplied} = req.body;
+    const {_id} = req.user;
+    validateMongodbId(id);
+    try{
+        if (!COD) throw new Error("Create cash order failed"); //as we are not using amy online payment right now so no other paymnet mode
+        const user = await User.findById(_id);
+        let userCart = await Cart.findOne({ orderby: user._id });
+        let finalAmout = 0;
+        if (couponApplied && userCart.totalAfterDiscount) {
+            finalAmout = userCart.totalAfterDiscount;
+        } else {
+            finalAmout = userCart.cartTotal;
+        }
+        let newOrder = await new Order({
+            products: userCart.products,
+            paymentIntent: {
+              id: uniqid(),
+              method: "COD",
+              amount: finalAmout,
+              status: "Cash on Delivery",
+              created: Date.now(),
+              currency: "usd",
+            },
+            orderby: user._id,
+            orderStatus: "Cash on Delivery",
+        }).save();
+        let update = userCart.products.map((item) => {
+            return {
+              updateOne: {
+                filter: { _id: item.product._id },
+                update: { $inc: { quantity: -item.count, sold: +item.count } },
+              },
+            };
+        });
+        const updatedOrder = await Product.bulkWrite(update, {})
+        res.json({message:"success"});
+
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const getUserOrders = expressAsyncHandler(async (req,res)=>{
+    const { _id } = req.user;
+    validateMongodbId(id);
+    try {
+        const userOrders = await Order.findOne({ orderby: _id })
+        .populate("products.product")
+        .populate("orderby")
+        .exec();
+        res.json(userOrders);
+    } catch (err) {
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const getAllOrders = expressAsyncHandler(async (req, res) => {
+    try {
+      const allUserOrders = await Order.find()
+        .populate("products.product")
+        .populate("orderby")
+        .exec();
+      res.json(allUserOrders);
+    } catch (err) {
+      throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const getOrderByUserId = expressAsyncHandler(async (req,res)=>{
+    const {id} = req.params;
+    validateMongodbId(id);
+    try{
+        const userOrders = await Order.findOne({orderby: id})
+        .populate("products.product")
+        .populate("orderby")
+        .exec();
+        res.json(userOrders);
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const updateOrderStatus = expressAsyncHandler(async (req,res)=>{
+    const { status } = req.body;
+    const { id } = req.params;
+    validateMongodbId(id);
+    try{
+        const updatedStatus = await Order.findByIdAndUpdate(id,{
+            orderStatus: status,
+            paymentIntent: {
+                status: status
+            },
+        },{
+            new:true
+        });
+        res.json(updatedStatus);
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const applyCoupon = expressAsyncHandler(async (req,res)=>{
+    const {coupon} = req.body;
+    const {_id} = req.user;
+    validateMongodbId(id);
+    try{
+        const validCoupon = await Couponn.findOne({name: coupin});
+        if(!validCoupon){
+            throw new Error("Not a valid Coupon");
+        }
+        const user = await User.findById(_id);
+        let cartTotal = await Cart.findOne({orderby:user._id}).
+        populate("products.product");
+        let totalAfterDiscount = (cartTotal -
+            (cartTotal * validCoupon.discount) / 100
+            ).toFixed(2);
+        await Cart.findOneAndUpdate(
+            {orderby: user._id},
+            {totalAfterDiscount},
+            {new:true}
+        );
+        res.json(totalAfterDiscount);
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const saveAddress = expressAsyncHandler(async (req,res)=>{
+    const {_id} = req.user;
+    validateMongodbId(id);
+    try{
+        const updatedUser = await User.findByIdAndUpdate(
+            _id,
+            {
+              address: req?.body?.address,
+            },
+            {
+              new: true,
+            }
+        );
+        res.json(updatedUser);
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
 
 
 module.exports = {
@@ -379,5 +514,12 @@ module.exports = {
     getWishlist,
     addToCart,
     getUserCart,
-    emptyCart
+    emptyCart,
+    createOrder,
+    getAllOrders,
+    getUserOrders,
+    getOrderByUserId,
+    updateOrderStatus,
+    applyCoupon,
+    saveAddress
 }
