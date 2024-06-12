@@ -16,10 +16,14 @@ const {
     allUsers,
     adminLogin,
     blockUser,
-    unblockUser
+    unblockUser,
+    getWishlist,
+    addToCart,
+    getUserCart,
+    emptyCart
 }  = require("../controllers/userController");
 
-// router.post("/admin-login", );
+router.post("/admin-login", adminLogin);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
@@ -33,6 +37,10 @@ router.get("/refresh", handleRefreshToken);
 router.post("/update-user", authMiddleware, updateUser);
 router.get("/profile", authMiddleware, getSingleUser);
 router.delete("/delete-user", authMiddleware, deleteUser);
+router.get("/wishlist", authMiddleware, getWishlist);
+router.post("/cart", authMiddleware, addToCart);
+router.get("/cart", authMiddleware, getUserCart);
+router.get("/empty-cart", authMiddleware, emptyCart);
 
 
 module.exports = router;

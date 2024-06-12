@@ -2,6 +2,7 @@ const expressAsyncHandler = require("express-async-handler");
 const crypto = require("crypto");
 
 const User = require("../models/User");
+const Cart = require("../models/Cart");
 const Coupon = require("../models/Coupon");
 const {generateRefreshToken} = require("../config/refreshToken");
 const {generateToken} = require("../config/jwtToken");
@@ -173,7 +174,6 @@ const handleRefreshToken = expressAsyncHandler(async (req,res)=>{
     });
 });
 
-
 const getSingleUser = expressAsyncHandler(async (req,res)=>{
     const id = req.user._id;
     validateMongodbId(id);
@@ -200,7 +200,6 @@ const updateUser = expressAsyncHandler(async (req,res)=>{
         res.status(200).json(user);
     }
 });
-
 
 const deleteUser = expressAsyncHandler(async (req,res)=>{
     const id = req.user._id;
@@ -266,6 +265,7 @@ const blockUser = expressAsyncHandler(async (req,res)=>{
         throw new Error("Something went wrong");
     }
 });
+
 const unblockUser = expressAsyncHandler(async (req,res)=>{
     const {id} = req.params;
     validateMongodbId(id);
@@ -278,6 +278,75 @@ const unblockUser = expressAsyncHandler(async (req,res)=>{
     }
 });
 
+const getWishlist = expressAsyncHandler(async (req,res)=>{
+    const {_id} = req.user;
+    validateMongodbId(id);
+    try{
+        const wishlist = await User.findById(_id).populate("wishlist");
+        res.json(wishlist);
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const addToCart = expressAsyncHandler(async (req,res)=>{
+    const {_id} = req.user;
+    const {cart} = req.body;
+    validateMongodbId(id);
+    try{
+        let products = [];
+        const user = User.findById(_id);
+        // checking if user has the product in cart already
+        const alreadyExist = await Cart.findOne({ orderby: user._id });
+        if(alreadyExist){
+            alreadyExist.remove();
+        }
+        for(let i=0;i< cart.length; i++){
+            let object = {};
+            object.product = cart[i]._id;
+            object.count = cart[i].count;
+            object.color = cart[i].color;
+            let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+            object.price = getPrice.price;
+            products.push(object);
+        }
+        let cartTotal = 0;
+        for (let i = 0; i < products.length; i++) {
+            cartTotal = cartTotal + products[i].price * products[i].count;
+        }
+        let newCart = await new Cart({
+            products,
+            cartTotal,
+            orderby: user?._id,
+        }).save();
+        res.json(newCart);
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const getUserCart = expressAsyncHandler(async (req,res)=>{
+    const {_id} = req.user;
+    validateMongodbId(id);
+    try{
+        const cart = await Cart.findOne({ orderby: _id }).populate("products.product");
+        res.json(cart);
+    }catch(err){
+        throw new Error(err?err.message:"Something went wrong");
+    }
+});
+
+const emptyCart = expressAsyncHandler(async (req,res)=>{
+    const {_id} = req.user;
+    validateMongodbId(id);
+    try{
+        const user = await Cart.findOne({_id});
+        const cart = await Cart.findOneAndRemove({ orderby: user._id });
+        res.json(cart);
+    }catch(err){
+        throw new Error(err?err.message:"Somethign went wrong");
+    }
+});
 // const applyCoupon = expressAsyncHandler(async (req,res)=>{
 //     const {coupon} = req.body;
 //     const {_id} = req.user;
@@ -306,5 +375,9 @@ module.exports = {
     allUsers,
     adminLogin,
     blockUser,
-    unblockUser
+    unblockUser,
+    getWishlist,
+    addToCart,
+    getUserCart,
+    emptyCart
 }
