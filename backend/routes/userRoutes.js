@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {authMiddleware} = require("../middlewares/authMiddleware");
+const {authMiddleware, isAdmin} = require("../middlewares/authMiddleware");
 
 const {
     registerUser,
@@ -12,13 +12,20 @@ const {
     handleRefreshToken,
     updateUser,
     getSingleUser,
-    deleteUser
+    deleteUser,
+    allUsers,
+    adminLogin,
+    blockUser,
+    unblockUser
 }  = require("../controllers/userController");
 
-
+// router.post("/admin-login", );
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);
+router.get("/all-users", authMiddleware, isAdmin, allUsers);
+router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);
+router.put("/unblock-user/:id", authMiddleware, isAdmin, unblockUser);
 router.post("/forgot-password-token", forgotPasswordToken);
 router.put("/reset-password/:token", resetPassword);
 router.put("/update-password", authMiddleware, updatePassword);
