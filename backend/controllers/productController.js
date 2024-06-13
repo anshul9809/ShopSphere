@@ -1,5 +1,5 @@
 const expressAsyncHandler = require("express-async-handler");
-const {validateMongodbId} = require("../utils/validateMongoDBId");
+const {validateMongodbId} = require("../utils/validateMongoDBid");
 const slugify = require("slugify");
 const {cloudinaryUploadImg} = require("../utils/cloudinary");
 const fs = require("fs");

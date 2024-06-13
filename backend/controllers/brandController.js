@@ -1,5 +1,5 @@
 const expressAsyncHandler = require("express-async-handler");
-const {validateMongodbId} = require("../utils/validateMongoDBId");
+const {validateMongodbId} = require("../utils/validateMongoDBid");
 const Brand = require("../models/Brand");
 
 const createBrand = expressAsyncHandler(async (req,res)=>{

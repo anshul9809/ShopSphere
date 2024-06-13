@@ -15,33 +15,16 @@ const FooterLinks = ()=>{
                         <p className={styles.link_heading}>Features</p>
                         <ul className={`${styles.nav_ul} ${styles.footer_links}`}>
                             <li>
-                                <a href="#" >Link Shortning</a>
+                                <a href="/link" >Link Shortning</a>
                             </li>
                             <li>
-                                <a href="#" >Branded Links</a>
+                                <a href="/brand" >Branded Links</a>
                             </li>
                             <li>
-                                <a href="#" >Analytics</a>
+                                <a href="/analytics" >Analytics</a>
                             </li>
                             <li>
-                                <a href="#" >Blog</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className={styles.footer_menu}>
-                        <p className={styles.link_heading}>Features</p>
-                        <ul className={`${styles.nav_ul} ${styles.footer_links}`}>
-                            <li>
-                                <a href="#" >Link Shortning</a>
-                            </li>
-                            <li>
-                                <a href="#" >Branded Links</a>
-                            </li>
-                            <li>
-                                <a href="#" >Analytics</a>
-                            </li>
-                            <li>
-                                <a href="#" >Blog</a>
+                                <a href="/blogs" >Blog</a>
                             </li>
                         </ul>
                     </div>
@@ -49,16 +32,33 @@ const FooterLinks = ()=>{
                         <p className={styles.link_heading}>Features</p>
                         <ul className={`${styles.nav_ul} ${styles.footer_links}`}>
                             <li>
-                                <a href="#" >Link Shortning</a>
+                                <a href="/link" >Link Shortning</a>
                             </li>
                             <li>
-                                <a href="#" >Branded Links</a>
+                                <a href="/brand" >Branded Links</a>
                             </li>
                             <li>
-                                <a href="#" >Analytics</a>
+                                <a href="/analytics" >Analytics</a>
                             </li>
                             <li>
-                                <a href="#" >Blog</a>
+                                <a href="/blogs" >Blog</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className={styles.footer_menu}>
+                        <p className={styles.link_heading}>Features</p>
+                        <ul className={`${styles.nav_ul} ${styles.footer_links}`}>
+                            <li>
+                                <a href="/link" >Link Shortning</a>
+                            </li>
+                            <li>
+                                <a href="/brand" >Branded Links</a>
+                            </li>
+                            <li>
+                                <a href="/analytics" >Analytics</a>
+                            </li>
+                            <li>
+                                <a href="/blogs" >Blog</a>
                             </li>
                         </ul>
                     </div>
