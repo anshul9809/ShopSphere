@@ -49,6 +49,8 @@ To get started with the Shopsphere backend, follow these steps:
     PORT=5000
     MONGO_URL=your_mongodb_uri
     JWT_SECRET=your_jwt_secret
+    GMAIL_EMAIL = your_gmail_email
+    GMAIL_PASSWORD = your_gmail_password
     CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
     CLOUDINARY_API_KEY=your_cloudinary_api_key
     CLOUDINARY_API_SECRET=your_cloudinary_api_secret
@@ -75,24 +77,24 @@ After setting up and running the server, you can interact with the API using too
 Here are some of the main API endpoints available in the Shopsphere backend:
 
 - **User Authentication:**
-  - `POST /api/users/register` - Register a new user
-  - `POST /api/users/login` - Log in a user
+  - `POST /api/v1/users/register` - Register a new user
+  - `POST /api/v1/users/login` - Log in a user
 
 - **Product Management:**
-  - `GET /api/products` - Get all products
-  - `GET /api/products/:id` - Get a single product by ID
-  - `POST /api/products` - Create a new product (admin only)
-  - `PUT /api/products/:id` - Update a product (admin only)
-  - `DELETE /api/products/:id` - Delete a product (admin only)
+  - `GET /api/v1/products` - Get all products
+  - `GET /api/v1/products/:id` - Get a single product by ID
+  - `POST /api/v1/products` - Create a new product (admin only)
+  - `PUT /api/v1/products/:id` - Update a product (admin only)
+  - `DELETE /api/v1/products/:id` - Delete a product (admin only)
 
 - **Cart Management:**
-  - `GET /api/cart` - Get the user's cart
-  - `POST /api/cart` - Add items to the cart
-  - `DELETE /api/cart/:id` - Remove items from the cart
+  - `GET /api/v1/cart` - Get the user's cart
+  - `POST /api/v1/cart` - Add items to the cart
+  - `DELETE /api/v1/cart/:id` - Remove items from the cart
 
 - **Order Processing:**
-  - `POST /api/orders` - Create a new order
-  - `GET /api/orders/:id` - Get order details by ID
+  - `POST /api/v1/orders` - Create a new order
+  - `GET /api/v1/orders/:id` - Get order details by ID
 
 ## Technologies Used
 
@@ -101,7 +103,8 @@ Here are some of the main API endpoints available in the Shopsphere backend:
 - MongoDB
 - JWT for authentication
 - Cloudinary for image upload
-- [Add any other technologies or libraries you used]
+- Nodemailer
+  
 
 ## Contributing
 
